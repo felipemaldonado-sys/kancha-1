@@ -21,6 +21,13 @@ export interface Court {
   slots: TimeSlot[];
 }
 
+export interface MapLocation {
+  /** Dirección legible para Maps / UI */
+  address: string;
+  lat: number;
+  lng: number;
+}
+
 export interface Venue {
   id: string;
   name: string;
@@ -30,6 +37,8 @@ export interface Venue {
   availableCourts: number;
   courts: Court[];
   priceFrom: number;
+  /** Ubicación real para abrir en Google Maps (sin API key) */
+  location: MapLocation;
 }
 
 export interface Reservation {
@@ -40,6 +49,7 @@ export interface Reservation {
   datetime: string;
   isToday: boolean;
   isActive: boolean;
+  location: MapLocation;
 }
 
 export interface OpenMatch {
@@ -51,6 +61,7 @@ export interface OpenMatch {
   playersNeeded: number;
   level: SkillLevel;
   pricePerPerson: number;
+  location: MapLocation;
 }
 
 export interface PlayerSport {

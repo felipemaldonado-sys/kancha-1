@@ -6,7 +6,7 @@ export default function PerfilPage() {
   const profile = PLAYER_PROFILE;
 
   return (
-    <div className="mx-auto min-h-screen max-w-lg pb-10">
+    <div className="kancha-shell pb-10">
       <Header
         title="Mi Perfil"
         backHref="/"
@@ -21,8 +21,8 @@ export default function PerfilPage() {
         }
       />
 
-      <main className="px-4 pt-6">
-        <div className="flex flex-col items-center text-center">
+      <main className="px-4 pt-4">
+        <div className="flex flex-col items-center text-center animate-fade-up">
           <div className="flex h-24 w-24 items-center justify-center rounded-full border-2 border-kancha-border bg-kancha-surface text-sm font-bold text-kancha-muted">
             FOTO
           </div>
@@ -38,13 +38,13 @@ export default function PerfilPage() {
         </div>
 
         <div className="mt-6 grid grid-cols-3 gap-3">
-          <div className="kancha-card text-center">
+          <div className="kancha-card text-center animate-fade-up">
             <p className="text-lg font-black text-white">{profile.matches}</p>
             <p className="text-[10px] uppercase tracking-wide text-kancha-muted">
               Partidos
             </p>
           </div>
-          <div className="kancha-card text-center">
+          <div className="kancha-card text-center animate-fade-up">
             <p className="text-lg font-black text-kancha-green">
               {profile.attendance}%
             </p>
@@ -52,7 +52,7 @@ export default function PerfilPage() {
               Asistencia
             </p>
           </div>
-          <div className="kancha-card text-center">
+          <div className="kancha-card text-center animate-fade-up">
             <p className="text-lg font-black text-yellow-400">⭐</p>
             <p className="text-[10px] uppercase tracking-wide text-kancha-muted">
               {profile.reliability}
@@ -70,26 +70,28 @@ export default function PerfilPage() {
               return (
                 <article
                   key={s.sport}
-                  className={`kancha-card border-l-4 ${accent.border}`}
+                  className={`kancha-card animate-fade-up ${
+                    s.sport === "futbol"
+                      ? "border-kancha-green/50"
+                      : "border-kancha-blue/50"
+                  }`}
                 >
                   <div className="flex items-start gap-3">
-                    <span className="text-2xl">
+                    <span className="text-2xl" aria-hidden>
                       {s.sport === "futbol" ? "⚽" : "🎾"}
                     </span>
                     <div>
                       <h4 className="font-bold text-white">
                         {s.sport === "futbol" ? "Fútbol 5 y 8" : "Pádel"}
                       </h4>
-                      <p className="text-xs text-kancha-muted">{s.level}</p>
+                      <p className={`text-xs font-medium ${accent.text}`}>
+                        {s.level}
+                      </p>
                       <div className="mt-2 flex flex-wrap gap-2">
                         {s.positions.map((pos) => (
                           <span
                             key={pos}
-                            className={`rounded-full px-2.5 py-0.5 text-[11px] font-semibold ${
-                              s.sport === "futbol"
-                                ? "bg-kancha-green/15 text-kancha-green"
-                                : "bg-kancha-blue/15 text-kancha-blue"
-                            }`}
+                            className={`rounded-full px-2.5 py-0.5 text-[11px] font-semibold ${accent.soft}`}
                           >
                             {pos}
                           </span>
@@ -113,7 +115,7 @@ export default function PerfilPage() {
                 key={badge.label}
                 className="inline-flex items-center gap-2 rounded-full border border-kancha-border bg-kancha-surface px-4 py-2 text-sm font-medium text-white"
               >
-                <span>{badge.icon}</span>
+                <span aria-hidden>{badge.icon}</span>
                 {badge.label}
               </span>
             ))}

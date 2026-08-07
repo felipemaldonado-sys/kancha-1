@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
-import { SportProvider } from "@/lib/kancha/sport-context";
+import { Outfit } from "next/font/google";
+import { KanchaProvider } from "@/lib/kancha/sport-context";
 import "./globals.css";
 
-const inter = Inter({
+const outfit = Outfit({
   subsets: ["latin"],
   variable: "--font-sans",
   display: "swap",
@@ -23,9 +23,9 @@ export default function RootLayout({
   return (
     <html lang="es" className="dark">
       <body
-        className={`${inter.variable} min-h-screen bg-kancha-bg font-sans antialiased text-white`}
+        className={`${outfit.variable} min-h-screen bg-kancha-bg font-sans antialiased text-white`}
       >
-        <SportProvider>{children}</SportProvider>
+        <KanchaProvider>{children}</KanchaProvider>
       </body>
     </html>
   );

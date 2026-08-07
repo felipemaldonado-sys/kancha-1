@@ -27,16 +27,18 @@ export function NavDrawer({ open, onClose }: NavDrawerProps) {
         onClick={onClose}
         aria-label="Cerrar menú"
       />
-      <aside className="absolute right-0 top-0 flex h-full w-[min(100%,320px)] flex-col bg-kancha-bg shadow-2xl">
+      <aside className="absolute right-0 top-0 flex h-full w-[min(100%,320px)] animate-drawer-in flex-col bg-kancha-bg shadow-2xl">
         <div className="flex items-center justify-between border-b border-kancha-border px-5 py-5">
-          <span className="text-lg font-black tracking-wider text-white">KANCHA</span>
+          <span className="text-lg font-black tracking-[0.18em] text-white">
+            KANCHA
+          </span>
           <button
             type="button"
             onClick={onClose}
-            className="flex h-9 w-9 items-center justify-center rounded-full text-kancha-green hover:bg-kancha-surface"
+            className="flex h-9 w-9 items-center justify-center rounded-full text-xl font-bold text-kancha-green hover:bg-kancha-surface"
             aria-label="Cerrar"
           >
-            ✕
+            ×
           </button>
         </div>
 
@@ -54,11 +56,13 @@ export function NavDrawer({ open, onClose }: NavDrawerProps) {
                     onClick={onClose}
                     className={`flex items-center gap-3 rounded-xl px-4 py-3.5 text-sm font-semibold transition ${
                       link.highlight || active
-                        ? "bg-kancha-green/10 text-kancha-green"
+                        ? "bg-kancha-green/15 text-kancha-green"
                         : "text-white hover:bg-kancha-surface"
                     }`}
                   >
-                    <span className="text-lg">{link.icon}</span>
+                    <span className="text-lg" aria-hidden>
+                      {link.icon}
+                    </span>
                     {link.label}
                   </Link>
                 </li>
@@ -74,10 +78,12 @@ export function NavDrawer({ open, onClose }: NavDrawerProps) {
           <Link
             href="/partners"
             onClick={onClose}
-            className="block rounded-xl border border-kancha-blue/40 bg-kancha-blue/5 p-4 transition hover:bg-kancha-blue/10"
+            className="block rounded-xl border border-kancha-blue/50 bg-kancha-blue/5 p-4 transition hover:bg-kancha-blue/10"
           >
             <div className="flex items-start gap-3">
-              <span className="text-xl">🏢</span>
+              <span className="text-xl" aria-hidden>
+                🏢
+              </span>
               <div>
                 <p className="font-bold text-kancha-blue">Kancha Partners</p>
                 <p className="mt-0.5 text-xs text-kancha-muted">
@@ -89,14 +95,16 @@ export function NavDrawer({ open, onClose }: NavDrawerProps) {
 
           <div className="my-6 border-t border-kancha-border" />
 
-          <Link
-            href="#"
+          <button
+            type="button"
             onClick={onClose}
-            className="flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-medium text-white hover:bg-kancha-surface"
+            className="flex w-full items-center gap-3 rounded-xl px-4 py-3 text-left text-sm font-medium text-white hover:bg-kancha-surface"
           >
-            <span className="text-lg">❓</span>
+            <span className="text-lg text-red-400" aria-hidden>
+              ❓
+            </span>
             Centro de Ayuda
-          </Link>
+          </button>
         </nav>
       </aside>
     </div>

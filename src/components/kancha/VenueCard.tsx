@@ -2,6 +2,8 @@
 
 import { useState } from "react";
 import type { Venue } from "@/lib/kancha/types";
+import { formatCop } from "@/lib/kancha/utils";
+import { MapsLink } from "./MapsLink";
 
 interface VenueCardProps {
   venue: Venue;
@@ -11,25 +13,33 @@ interface VenueCardProps {
 export function VenueCard({ venue, defaultExpanded = false }: VenueCardProps) {
   const [expanded, setExpanded] = useState(defaultExpanded);
   const [selectedSlot, setSelectedSlot] = useState<string | null>(
-    defaultExpanded ? "19:00" : null
+    defaultExpanded
+      ? venue.courts[0]?.slots.find((s) => s.available)?.time ?? null
+      : null
   );
 
   const allOccupied = venue.availableCourts === 0;
   const court = venue.courts[0];
 
   return (
-    <article className="kancha-card overflow-hidden">
-      <button
-        type="button"
-        onClick={() => !allOccupied && setExpanded(!expanded)}
-        className="w-full text-left"
-      >
-        <div className="flex gap-3">
-          <div className="h-14 w-14 shrink-0 rounded-xl bg-kancha-surface" />
+    <article className="kancha-card overflow-hidden animate-fade-up">
+      <div className="flex gap-3">
+        <button
+          type="button"
+          onClick={() => !allOccupied && setExpanded(!expanded)}
+          className="flex min-w-0 flex-1 gap-3 text-left"
+        >
+          <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-xl bg-kancha-surface text-2xl">
+            {venue.sports.toLowerCase().includes("pádel") ||
+            venue.sports.toLowerCase().includes("padel")
+              ? "🎾"
+              : "⚽"}
+          </div>
           <div className="min-w-0 flex-1">
             <h3 className="font-bold text-white">{venue.name}</h3>
             <p className="mt-0.5 text-xs text-kancha-muted">
-              📍 A {venue.distance} • {venue.sports}
+              <span className="text-red-400">📍</span> A {venue.distance} •{" "}
+              {venue.sports}
             </p>
             <p className="mt-1 text-xs">
               {allOccupied ? (
@@ -46,8 +56,27 @@ export function VenueCard({ venue, defaultExpanded = false }: VenueCardProps) {
               )}
             </p>
           </div>
-        </div>
-      </button>
+        </button>
+      </div>
+
+      <p className="mt-2 truncate text-[11px] text-kancha-muted">
+        {venue.location.address}
+      </p>
+      <div className="mt-2 flex flex-wrap gap-3">
+        <MapsLink
+          location={venue.location}
+          placeName={venue.name}
+          className="text-xs font-semibold text-kancha-green hover:underline"
+        />
+        <MapsLink
+          location={venue.location}
+          placeName={venue.name}
+          mode="directions"
+          className="text-xs font-semibold text-kancha-muted hover:text-white hover:underline"
+        >
+          Cómo llegar
+        </MapsLink>
+      </div>
 
       {expanded && court && (
         <div className="mt-4 border-t border-kancha-border pt-4">
@@ -74,11 +103,15 @@ export function VenueCard({ venue, defaultExpanded = false }: VenueCardProps) {
               </button>
             ))}
           </div>
-          <button type="button" className="kancha-btn-primary mt-4 w-full">
+          <button
+            type="button"
+            className="kancha-btn-primary mt-4 w-full"
+            disabled={!selectedSlot}
+          >
             Elegir Horario
           </button>
           <p className="mt-2 text-center text-[11px] text-kancha-muted">
-            Precios desde ${venue.priceFrom.toLocaleString("es-CO")} (Se confirma en el
+            Precios desde {formatCop(venue.priceFrom)} (Se confirma en el
             siguiente paso)
           </p>
         </div>

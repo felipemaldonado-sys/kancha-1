@@ -1,8 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
-import { PARTNER_VENUE } from "@/lib/kancha/data";
+import { Header } from "@/components/kancha/Header";
+import { useKancha } from "@/lib/kancha/sport-context";
 import type { PartnerCourt } from "@/lib/kancha/types";
 
 function CourtManager({
@@ -15,15 +15,15 @@ function CourtManager({
   const toggleSlot = (time: string) => {
     const slots = court.slots.map((s) => {
       if (s.time !== time) return s;
-      const next =
-        s.status === "available"
-          ? "occupied"
-          : s.status === "occupied"
-            ? "available"
-            : s.status;
+      if (s.status === "booked") return s;
+      const next = s.status === "available" ? "occupied" : "available";
       return { ...s, status: next as "available" | "booked" | "occupied" };
     });
-    onUpdate({ ...court, occupied: slots.every((s) => s.status !== "available") });
+    onUpdate({
+      ...court,
+      occupied: slots.every((s) => s.status !== "available"),
+      slots,
+    });
   };
 
   const statusColor = {
@@ -39,16 +39,15 @@ function CourtManager({
   };
 
   return (
-    <article className="kancha-card">
+    <article className="kancha-card animate-fade-up">
       <div className="flex items-start justify-between gap-3">
         <div>
           <div className="flex items-center gap-2">
-            <span>{court.sport === "futbol" ? "⚽" : "🎾"}</span>
+            <span aria-hidden>{court.sport === "futbol" ? "⚽" : "🎾"}</span>
             <h3 className="font-bold text-white">{court.name}</h3>
           </div>
           <p className="mt-0.5 text-xs text-kancha-muted">
-            {court.surface} •{" "}
-            {court.sport === "futbol" ? "Fútbol" : "Pádel"}
+            {court.surface} • {court.sport === "futbol" ? "Fútbol" : "Pádel"}
           </p>
         </div>
         <span
@@ -75,7 +74,11 @@ function CourtManager({
             title={statusLabel[slot.status]}
             className={`rounded-lg border px-3 py-2 text-xs font-semibold transition ${
               statusColor[slot.status]
-            } ${slot.status === "booked" ? "cursor-not-allowed opacity-70" : "hover:opacity-80"}`}
+            } ${
+              slot.status === "booked"
+                ? "cursor-not-allowed opacity-70"
+                : "hover:opacity-80 active:scale-95"
+            }`}
           >
             {slot.time}
           </button>
@@ -86,54 +89,37 @@ function CourtManager({
 }
 
 export default function PartnersPage() {
-  const [venue, setVenue] = useState(PARTNER_VENUE);
+  const { partnerVenue, updatePartnerCourt } = useKancha();
 
-  const updateCourt = (updated: PartnerCourt) => {
-    setVenue((prev) => ({
-      ...prev,
-      courts: prev.courts.map((c) => (c.id === updated.id ? updated : c)),
-    }));
-  };
-
-  const availableCount = venue.courts.reduce(
+  const availableCount = partnerVenue.courts.reduce(
     (acc, c) => acc + c.slots.filter((s) => s.status === "available").length,
     0
   );
 
   return (
-    <div className="mx-auto min-h-screen max-w-lg pb-10">
-      <header className="sticky top-0 z-40 border-b border-kancha-border/50 bg-kancha-bg/95 backdrop-blur-md">
-        <div className="mx-auto flex max-w-lg items-center justify-between px-4 py-4">
-          <Link
-            href="/"
-            className="flex h-10 w-10 items-center justify-center rounded-full text-white hover:bg-kancha-surface"
-          >
-            ←
-          </Link>
-          <div className="text-center">
-            <p className="text-[10px] font-bold uppercase tracking-widest text-kancha-blue">
-              Kancha Partners
-            </p>
-            <h1 className="text-sm font-bold text-white">{venue.name}</h1>
-          </div>
-          <div className="h-10 w-10" />
-        </div>
-      </header>
+    <div className="kancha-shell pb-10">
+      <Header
+        title="Kancha Partners"
+        backHref="/"
+        showMenu
+      />
 
-      <main className="px-4 pt-6">
-        <div className="rounded-2xl border border-kancha-blue/30 bg-kancha-blue/5 p-4">
+      <main className="px-4 pt-2">
+        <div className="rounded-2xl border border-kancha-blue/30 bg-kancha-blue/5 p-4 animate-fade-up">
           <p className="text-sm font-semibold text-kancha-blue">
-            Panel B2B — Gestión de sede
+            Panel B2B — {partnerVenue.name}
           </p>
           <p className="mt-1 text-xs text-kancha-muted">
-            Administra la disponibilidad y ocupación de tus canchas en tiempo real.
-            Los jugadores verán estos horarios al reservar.
+            Administra la disponibilidad y ocupación de tus canchas. Los
+            cambios se reflejan en la vista de reserva de jugadores.
           </p>
         </div>
 
         <div className="mt-5 grid grid-cols-3 gap-3">
           <div className="kancha-card text-center">
-            <p className="text-lg font-black text-white">{venue.courts.length}</p>
+            <p className="text-lg font-black text-white">
+              {partnerVenue.courts.length}
+            </p>
             <p className="text-[10px] uppercase text-kancha-muted">Canchas</p>
           </div>
           <div className="kancha-card text-center">
@@ -151,17 +137,17 @@ export default function PartnersPage() {
             Canchas de tu sede
           </h2>
           <div className="space-y-4">
-            {venue.courts.map((court) => (
+            {partnerVenue.courts.map((court) => (
               <CourtManager
                 key={court.id}
                 court={court}
-                onUpdate={updateCourt}
+                onUpdate={updatePartnerCourt}
               />
             ))}
           </div>
         </section>
 
-        <div className="mt-6 flex gap-2 text-[10px] text-kancha-muted">
+        <div className="mt-6 flex flex-wrap gap-2 text-[10px] text-kancha-muted">
           <span className="rounded border border-kancha-green/50 bg-kancha-green/10 px-2 py-0.5 text-kancha-green">
             Disponible
           </span>

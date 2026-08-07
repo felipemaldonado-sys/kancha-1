@@ -3,8 +3,10 @@
 @tailwind utilities;
 
 :root {
-  --background: #0c0e14;
+  --background: #12171e;
   --foreground: #f1f5f9;
+  --kancha-green: #55d869;
+  --kancha-blue: #3b9eff;
 }
 
 body {
@@ -13,26 +15,71 @@ body {
   min-height: 100vh;
 }
 
-@layer utilities {
-  .text-balance {
-    text-wrap: balance;
-  }
+.kancha-shell {
+  position: relative;
+  margin-left: auto;
+  margin-right: auto;
+  min-height: 100vh;
+  max-width: 32rem;
+  overflow: hidden;
+  background-color: #12171e;
+  background-image: radial-gradient(
+    120% 60% at 50% -10%,
+    rgba(47, 158, 69, 0.22),
+    transparent 55%
+  );
 }
 
-@layer components {
-  .kancha-pill {
-    @apply rounded-full px-5 py-2.5 text-sm font-semibold transition-all;
-  }
+.kancha-pill {
+  border-radius: 9999px;
+  padding: 0.625rem 1.25rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  transition: all 0.2s ease;
+}
 
-  .kancha-card {
-    @apply rounded-2xl border border-kancha-border bg-kancha-card p-4;
-  }
+.kancha-card {
+  border-radius: 1rem;
+  border: 1px solid #2a3341;
+  background-color: #1e2530;
+  padding: 1rem;
+}
 
-  .kancha-btn-primary {
-    @apply rounded-xl bg-kancha-green px-6 py-3 text-sm font-bold uppercase tracking-wide text-black transition hover:bg-lime-300;
-  }
+.kancha-btn-primary {
+  border-radius: 0.75rem;
+  background-color: #55d869;
+  padding: 0.75rem 1.5rem;
+  font-size: 0.875rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.025em;
+  color: #000;
+  transition: filter 0.15s ease, transform 0.15s ease;
+}
 
-  .kancha-btn-secondary {
-    @apply rounded-xl border border-kancha-border bg-kancha-surface px-4 py-2 text-sm font-medium text-white transition hover:bg-kancha-card;
-  }
+.kancha-btn-primary:hover {
+  filter: brightness(1.1);
+}
+
+.kancha-btn-primary:active {
+  transform: scale(0.98);
+}
+
+.kancha-btn-secondary {
+  border-radius: 0.75rem;
+  border: 1px solid #2a3341;
+  background-color: #161c26;
+  padding: 0.5rem 1rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #fff;
+  transition: background-color 0.15s ease, transform 0.15s ease;
+}
+
+.kancha-btn-secondary:hover {
+  background-color: #1e2530;
+}
+
+.kancha-btn-secondary:active {
+  transform: scale(0.98);
 }
